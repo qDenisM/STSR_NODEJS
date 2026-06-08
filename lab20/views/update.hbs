@@ -1,0 +1,20 @@
+<div class="list-container">
+  {{#each entries}}
+    {{> entry-row disabled=../disabled}}
+  {{/each}}
+</div>
+
+<form action="/Update" method="POST" class="entry-form">
+  <input type="hidden" name="id" value="{{entry.id}}">
+  <div class="form-row">
+    <input type="text" name="name" value="{{entry.name}}" class="input-name edit-input">
+    <input type="text" name="phone" value="{{entry.phone}}" class="input-phone edit-input">
+  </div>
+  <div class="btn-group btn-group-three">
+    <button type="submit" class="btn btn-change">Изменить</button>
+    <button type="submit" formaction="/Delete" class="btn btn-delete" id="delete-btn">Удалить</button>
+    {{{cancelLink}}}
+  </div>
+</form>
+
+<script src="/js/update.js"></script>

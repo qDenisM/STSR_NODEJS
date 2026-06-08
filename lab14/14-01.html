@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>14-01 — кафедры</title>
+</head>
+<body>
+    <h1>14-01 — API кафедр</h1>
+
+    <h2>GET — api/pulpits</h2>
+    <button
+        id="get-btn"
+        style="
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            background-color: darkseagreen;
+            padding: 5px 15px;
+            cursor: pointer;
+        "
+    >
+        GET
+    </button>
+    <pre id="get-result" style="margin-top: 10px;"></pre>
+
+    <h2>POST — api/pulpits</h2>
+    <form id="post-form">
+        <label style="display: block; margin: 8px 0">
+            Код кафедры (PULPIT):
+            <input type="text" name="pulpit" required />
+        </label>
+        <label style="display: block; margin: 8px 0">
+            Название (PULPIT_NAME):
+            <input type="text" name="pulpitName" required />
+        </label>
+        <label style="display: block; margin: 8px 0">
+            Факультет (FACULTY):
+            <input type="text" name="faculty" required />
+        </label>
+        <button
+            type="submit"
+            style="
+                font-size: 16px;
+                border-radius: 5px;
+                border: none;
+                background-color: gold;
+                padding: 5px 15px;
+                cursor: pointer;
+            "
+        >
+            POST
+        </button>
+    </form>
+
+    <p>Выберите кафедру для PUT / DELETE:</p>
+    <select id="pulpit-select" style="margin-bottom: 10px; min-width: 320px"></select>
+
+    <h2>PUT — api/pulpits</h2>
+    <form id="put-form">
+        <label style="display: block; margin: 8px 0">
+            Код кафедры (PULPIT):
+            <input type="text" name="pulpit" required />
+        </label>
+        <label style="display: block; margin: 8px 0">
+            Название (PULPIT_NAME):
+            <input type="text" name="pulpitName" required />
+        </label>
+        <label style="display: block; margin: 8px 0">
+            Факультет (FACULTY):
+            <input type="text" name="faculty" required />
+        </label>
+        <button
+            type="submit"
+            style="
+                font-size: 16px;
+                border-radius: 5px;
+                border: none;
+                background-color: royalblue;
+                color: white;
+                padding: 5px 15px;
+                cursor: pointer;
+            "
+        >
+            PUT
+        </button>
+    </form>
+
+    <h2>DELETE — api/pulpits/xyz</h2>
+    <label style="display: block; margin: 8px 0">
+        Код кафедры (xyz):
+        <input type="text" id="delete-code" />
+    </label>
+    <button
+        id="delete-btn"
+        style="
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            background-color: orangered;
+            color: white;
+            padding: 5px 15px;
+            cursor: pointer;
+        "
+    >
+        DELETE
+    </button>
+
+    <h2>Ответ сервера</h2>
+    <pre id="response" style="background: #f5f5f5; padding: 10px;"></pre>
+
+    <h2 style="color: crimson;">Ошибка</h2>
+    <pre id="error" style="color: crimson; background: #fff0f0; padding: 10px;"></pre>
+
+    <script>
+        const getBtn = document.getElementById('get-btn')
+        const getResult = document.getElementById('get-result')
+        const postForm = document.getElementById('post-form')
+        const putForm = document.getElementById('put-form')
+        const pulpitSelect = document.getElementById('pulpit-select')
+        const deleteBtn = document.getElementById('delete-btn')
+        const deleteCode = document.getElementById('delete-code')
+        const responseEl = document.getElementById('response')
+        const errorEl = document.getElementById('error')
+
+        function clearError() {
+            errorEl.textContent = ''
+        }
+
+        function showError(message) {
+            errorEl.textContent = message
+            responseEl.textContent = ''
+        }
+
+        function showResponse(data) {
+            clearError()
+            responseEl.textContent = JSON.stringify(data, null, 2)
+        }
+
+        async function sendRequest(url, options = {}) {
+            clearError()
+            try {
+                const response = await fetch(url, {
+                    headers: { 'Content-Type': 'application/json' },
+                    ...options,
+                })
+                const text = await response.text()
+                if (!text) {
+                    showError('Пустой ответ сервера')
+                    return null
+                }
+                let result
+                try {
+                    result = JSON.parse(text)
+                } catch {
+                    showError(text)
+                    return null
+                }
+                if (result.error) {
+                    showError(result.message || JSON.stringify(result))
+                    return null
+                }
+                showResponse(result)
+                return result
+            } catch (err) {
+                showError(err.message)
+                return null
+            }
+        }
+
+        function fillPulpitSelect(data) {
+            pulpitSelect.innerHTML = ''
+            const rows = Object.values(data || {})
+            rows.forEach((item) => {
+                const option = document.createElement('option')
+                option.value = JSON.stringify(item)
+                option.textContent = `${item.PULPIT} — ${item.PULPIT_NAME}`
+                pulpitSelect.appendChild(option)
+            })
+            if (rows.length > 0) {
+                fillPutForm(JSON.parse(pulpitSelect.value))
+                deleteCode.value = rows[0].PULPIT
+            }
+        }
+
+        function fillPutForm(item) {
+            putForm.pulpit.value = item.PULPIT
+            putForm.pulpitName.value = item.PULPIT_NAME
+            putForm.faculty.value = item.FACULTY
+        }
+
+        pulpitSelect.addEventListener('change', () => {
+            const item = JSON.parse(pulpitSelect.value)
+            fillPutForm(item)
+            deleteCode.value = item.PULPIT
+        })
+
+        getBtn.addEventListener('click', async () => {
+            const result = await sendRequest('/api/pulpits')
+            if (result) {
+                getResult.textContent = JSON.stringify(result, null, 2)
+                fillPulpitSelect(result)
+            }
+        })
+
+        postForm.addEventListener('submit', async (event) => {
+            event.preventDefault()
+            const formData = new FormData(postForm)
+            const body = {
+                PULPIT: formData.get('pulpit'),
+                PULPIT_NAME: formData.get('pulpitName'),
+                FACULTY: formData.get('faculty'),
+            }
+            const result = await sendRequest('/api/pulpits', {
+                method: 'POST',
+                body: JSON.stringify(body),
+            })
+            if (result) {
+                postForm.reset()
+                await sendRequest('/api/pulpits').then((data) => {
+                    if (data) {
+                        getResult.textContent = JSON.stringify(data, null, 2)
+                        fillPulpitSelect(data)
+                    }
+                })
+            }
+        })
+
+        putForm.addEventListener('submit', async (event) => {
+            event.preventDefault()
+            const prev = JSON.parse(pulpitSelect.value)
+            const formData = new FormData(putForm)
+            const upd = {
+                PULPIT: formData.get('pulpit'),
+                PULPIT_NAME: formData.get('pulpitName'),
+                FACULTY: formData.get('faculty'),
+            }
+            const result = await sendRequest('/api/pulpits', {
+                method: 'PUT',
+                body: JSON.stringify({ prev, upd }),
+            })
+            if (result) {
+                await sendRequest('/api/pulpits').then((data) => {
+                    if (data) {
+                        getResult.textContent = JSON.stringify(data, null, 2)
+                        fillPulpitSelect(data)
+                    }
+                })
+            }
+        })
+
+        deleteBtn.addEventListener('click', async () => {
+            const code = deleteCode.value.trim()
+            if (!code) {
+                showError('Укажите код кафедры для удаления')
+                return
+            }
+            const result = await sendRequest(`/api/pulpits/${code}`, {
+                method: 'DELETE',
+            })
+            if (result) {
+                deleteCode.value = ''
+                await sendRequest('/api/pulpits').then((data) => {
+                    if (data) {
+                        getResult.textContent = JSON.stringify(data, null, 2)
+                        fillPulpitSelect(data)
+                    }
+                })
+            }
+        })
+    </script>
+</body>
+</html>

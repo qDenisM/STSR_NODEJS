@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JQuery</title>
+  </head>
+  <body>
+    <script
+      src="https://code.jquery.com/jquery-4.0.0.js"
+      integrity="sha256-9fsHeVnKBvqh3FB2HYu7g2xseAZ5MlN6Kz/qnkASV8U="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $.ajax({
+        method: "get",
+        url: "http://localhost:2001/api/name",
+        dataType: "text",
+        success: (data) => {
+          document.body.innerHTML = data
+        },
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+{{#if disabled}}
+<a class="entry-row disabled">
+  <span class="entry-name">{{name}}</span>
+  <span class="entry-phone">{{phone}}</span>
+</a>
+{{else}}
+<a href="/Update?id={{id}}" class="entry-row">
+  <span class="entry-name">{{name}}</span>
+  <span class="entry-phone">{{phone}}</span>
+</a>
+{{/if}}

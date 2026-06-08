@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>03-03</title>
+  </head>
+  <body>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <button
+        id="chain-windows"
+        style="
+          cursor: pointer;
+          border: none;
+          padding: 10px 20px;
+          background-color: gold;
+          border-radius: 5px;
+          width: 16rem;
+        "
+      >
+        Две вкладки последовательно
+      </button>
+      <button
+        id="parallel-windows"
+        style="
+          cursor: pointer;
+          border: none;
+          padding: 10px 20px;
+          background-color: mediumaquamarine;
+          border-radius: 5px;
+          width: 16rem;
+        "
+      >
+        Три вкладки одновременно
+      </button>
+    </div>
+
+    <script>
+      const urls = Array.from(
+        { length: 20 },
+        (_, i) => `http://localhost:2000/fact/?k=${i + 1}`,
+      );
+      const result = [];
+      console.log(urls);
+      const btnChainWindows = document.getElementById("chain-windows");
+      const btnParallelWindows = document.getElementById("parallel-windows");
+
+      async function loadAll() {
+        const startTime = Date.now();
+        const result = [];
+        for (const url of urls) {
+          const res = await fetch(`${url}`);
+          const data = await res.json();
+          const elapsed = Date.now() - startTime;
+          result.push({ ...data, t: elapsed });
+        }
+        return result;
+      }
+
+      loadAll().then((result) => {
+        for (item of result) {
+          paragraph = document.createElement("p");
+          paragraph.textContent = `${item.k}.Результат: ${item.t}-${item.k}/${item.fact}`;
+          document.body.append(paragraph);
+        }
+      });
+
+      btnChainWindows.addEventListener("click", async () => {
+        window.open(window.location.href, "_blank");
+        new Promise((resolve) => setTimeout(resolve, 1000));
+        window.open(window.location.href, "_blank");
+      });
+
+      btnParallelWindows.addEventListener("click", () => {
+        window.open(window.location.href, "_blank");
+        window.open(window.location.href, "_blank");
+        window.open(window.location.href, "_blank");
+      });
+    </script>
+  </body>
+</html>

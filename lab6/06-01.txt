@@ -1,0 +1,6 @@
+1. С помощью npm получите информацию о пакете sendmail.
+    npm view sendmail
+2. С помощью npm скачайте пакет sendmail в локальный директорий. 
+    npm i sendmail
+3. С помощью npm убедитесь, что пакет установлен. 
+    npm list sendmail

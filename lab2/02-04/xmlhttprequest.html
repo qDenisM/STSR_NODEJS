@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XMLHttpRequest</title>
+  </head>
+  <body>
+    <script>
+      let xhr = new XMLHttpRequest();
+
+      xhr.open("GET", "http://localhost:2001/api/name");
+      xhr.send();
+      xhr.onload = () => {
+        if (xhr.status != 200) {
+          console.log(`error ${xhr.status}: ${xhr.statusText}`);
+        } else {
+          document.body.innerHTML = xhr.responseText
+        }
+      };
+    </script>
+  </body>
+</html>

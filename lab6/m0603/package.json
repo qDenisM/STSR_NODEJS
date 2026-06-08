@@ -1,0 +1,14 @@
+{
+  "name": "m0603_node",
+  "version": "1.0.0",
+  "description": "send message using sendmail",
+  "main": "m0603.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "qdenism",
+  "license": "ISC",
+  "dependencies": {
+    "sendmail": "^1.6.1"
+  }
+}

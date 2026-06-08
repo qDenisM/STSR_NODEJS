@@ -1,0 +1,28 @@
+* {
+    font-size: 1.5rem;
+}
+
+p {
+    color: blue;
+}
+
+#js-test {
+    color: deeppink;
+}
+
+img {
+    display: block;
+}
+
+video {
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: dodgerblue;
+    cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+    }
+}

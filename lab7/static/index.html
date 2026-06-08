@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <p>Test CSS</p>
+    <div id="js-test"></div>
+    <script src="./js/main.js"></script>
+    <img style="display: block" src="./png/png.png" />
+    <video controls width="400px">
+      <source src="./mp4/video_frontend.mp4" type="video/mp4"/>
+    </video>
+    <a href="./docx/lection6.docx">Download Lection 6 Http-Server</a>
+    <div id="json-container"></div>
+    <div id="xml-container"></div>
+    <script>
+      fetch("http://localhost:8080/json/json.json")
+        .then((res) => {
+          return res.json();
+        })
+        .then((result) => {
+            const container = document.getElementById('json-container')
+            container.innerHTML = JSON.stringify(result)
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+        fetch("http://localhost:8080/xml/index.xml")
+        .then((res) => {
+          return res.text();
+        })
+        .then((result) => {
+            console.log(result)
+            const container = document.getElementById('xml-container')
+            container.innerHTML = result
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>04-02</title>
+  </head>
+  <body>
+    <h2>GET-запрос</h2>
+    <button
+      id="get-btn"
+      style="
+        font-size: 16px;
+        border-radius: 5px;
+        border: none;
+        background-color: darkseagreen;
+        padding: 5px 15px;
+        cursor: pointer;
+      "
+    >
+      GET
+    </button>
+    <div id="get-query"></div>
+    <h2>POST-запрос</h2>
+    <form id="post-form">
+      <label
+        >Имя (Иванов И. И.):
+        <input type="text" name="fullname" />
+      </label>
+      <label style="display: block; margin: 15px 0"
+        >Дата рождения(YYYY-MM-DD):
+        <input type="text" name="birthday" />
+      </label>
+      <button
+        type="submit"
+        style="
+          font-size: 16px;
+          border-radius: 5px;
+          border: none;
+          background-color: gold;
+          padding: 5px 15px;
+          cursor: pointer;
+        "
+      >
+        POST
+      </button>
+    </form>
+
+    <p>Выберите элемент:</p>
+    <select name="" id="put-select" style="margin-bottom: 10px"></select>
+
+    <h2>PUT-запрос</h2>
+    <form id="put-form">
+      <label
+        >Имя (Иванов И. И.):
+        <input type="text" name="fullname-put" />
+      </label>
+      <label style="display: block; margin: 15px 0"
+        >Дата рождения(YYYY-MM-DD):
+        <input type="text" name="birthday-put" />
+      </label>
+      <button
+        type="submit"
+        id="put-btn"
+        style="
+          font-size: 16px;
+          border-radius: 5px;
+          border: none;
+          background-color: royalblue;
+          padding: 5px 15px;
+          cursor: pointer;
+        "
+      >
+        PUT
+      </button>
+    </form>
+
+    <h2>DELETE-запрос</h2>
+    <button
+      id="del-btn"
+      style="
+        font-size: 16px;
+        border-radius: 5px;
+        border: none;
+        background-color: orangered;
+        padding: 5px 15px;
+        cursor: pointer;
+      "
+    >
+      DELETE
+    </button>
+    <div id="delete-query"></div>
+
+    <script>
+      const getBtn = document.getElementById("get-btn");
+      const getDiv = document.getElementById("get-query");
+      const form = document.getElementById("post-form");
+      const updBtn = document.getElementById("put-btn");
+      const putSelectList = document.getElementById("put-select");
+      const putForm = document.getElementById("put-form")
+      const delBtn = document.getElementById("del-btn");
+
+      getBtn.addEventListener("click", async () => {
+        await fetch("http://localhost:2000/api/db")
+          .then((response) => response.json())
+          .then((result) => {
+            getDiv.innerHTML = JSON.stringify(result);
+            result.forEach((item) => {
+              if (!putSelectList.querySelector(`.option-${item.id}`)) {
+                var optionItem = document.createElement("option");
+                optionItem.classList.add(`option-${item.id}`);
+                optionItem.innerHTML = JSON.stringify(item);
+                putSelectList.appendChild(optionItem);
+              }
+            });
+          });
+      });
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+
+        await fetch("http://localhost:2000/api/db", {
+          method: "POST",
+          body: JSON.stringify({
+            id: null,
+            name: formData.get("fullname"),
+            bday: formData.get("birthday"),
+          }),
+        })
+          .then((response) => {
+            response.json();
+          })
+          .then((result) => {
+            console.log(result);
+          });
+      });
+
+      putForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const oldItem = JSON.parse(putSelectList.value)
+          const formData = new FormData(putForm)
+          
+          await fetch("http://localhost:2000/api/db", {
+            method: "PUT",
+            body: JSON.stringify({
+              id: oldItem.id,
+              name: formData.get("fullname-put"),
+              bday: formData.get("birthday-put"),
+            })
+          })
+            .then((response) => response.json())
+            .then((result) => {
+              console.log(result)
+            });
+        });
+
+        delBtn.addEventListener("click", async () => {
+          const oldItem = JSON.parse(putSelectList.value)
+          await fetch(`http://localhost:2000/api/db?id=${oldItem.id}`, {
+            method: "DELETE",
+          }).then(response => response.json()).then(result => console.log('successful'));
+        });
+    </script>
+  </body>
+</html>

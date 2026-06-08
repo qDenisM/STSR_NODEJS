@@ -1,0 +1,9 @@
+{
+  "name": "20-01",
+  "version": "1.0.0",
+  "main": "20-01.js",
+  "dependencies": {
+    "express": "^5.2.1",
+    "express-handlebars": "^8.0.1"
+  }
+}

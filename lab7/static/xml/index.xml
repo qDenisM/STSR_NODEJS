@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library>
+  <book id="001">
+    <title>Мастер и Маргарита</title>
+    <author>Михаил Булгаков</author>
+    <year>1967</year>
+    <genre>Роман</genre>
+  </book>
+  <book id="002">
+    <title>Преступление и наказание</title>
+    <author>Фёдор Достоевский</author>
+    <year>1866</year>
+    <genre>Роман</genre>
+  </book>
+</library>

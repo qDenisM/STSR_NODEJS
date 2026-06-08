@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10-01</title>
+</head>
+<body>
+    <h1>10-01</h1>
+    <button onclick="sendToWSServer()" style="padding: 10px 20px;">startWS</button>
+    <script>
+        function sendToWSServer() {
+            const socket = new WebSocket('ws://localhost:4000/')
+            let n = 0
+            socket.onopen = () => {
+                console.log('socket client')
+                setInterval(() => socket.send(`10-01-client: ${n++}`), 3000)
+
+            }
+            
+            socket.onmessage = (event) => {
+                console.log(event.data)
+            }
+
+            setTimeout(() => socket.close(), 25000)
+
+            socket.onclose = () => {
+                console.log('WebSocket Client shutdown')
+            }
+            
+        }
+    </script>
+</body>
+</html>
